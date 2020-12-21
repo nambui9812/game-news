@@ -4,4 +4,10 @@
 
 `npm install`
 
-`npm start`
+# Build
+
+`npm run build`
+
+# Run on development environment
+
+`npm run dev`
