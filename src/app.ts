@@ -17,10 +17,13 @@ const initServer = () => {
 
     // Connect DB
     createConnection({
-        type: 'mongodb',
-        url: `mongodb+srv://nambui9812:${dotenv.TYPEORM.TYPEORM_PASSWORD}@${dotenv.TYPEORM.TYPEORM_HOST}/${dotenv.TYPEORM.TYPEORM_DBNAME}?retryWrites=true&w=majority`,
-        authSource: 'admin',
-        useUnifiedTopology: true,
+        type: 'postgres',
+        host: dotenv.TYPEORM.TYPEORM_HOST,
+        port: dotenv.TYPEORM.TYPEORM_PORT as number,
+        database: dotenv.TYPEORM.TYPEORM_DBNAME,
+        username: dotenv.TYPEORM.TYPEORM_USERNAME,
+        password: dotenv.TYPEORM.TYPEORM_PASSWORD,
+        synchronize: true,
         entities: [ __dirname + '/models/*.ts' ]
     })
     .then((connection) => console.log('Database connected'))
