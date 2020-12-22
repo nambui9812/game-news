@@ -1,9 +1,9 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ObjectID, ObjectIdColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class User {
-    @PrimaryGeneratedColumn({ type: 'uuid' })
-    id: string;
+    @ObjectIdColumn()
+    id: ObjectID;
 
     @Column()
     email: string;
@@ -13,6 +13,9 @@ export default class User {
 
     @Column()
     password: string;
+
+    @Column()
+    role: number;
 
     @Column()
     lastLogin: Date;

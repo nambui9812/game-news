@@ -17,12 +17,9 @@ const initServer = () => {
 
     // Connect DB
     createConnection({
-        type: 'postgres',
-        host: dotenv.TYPEORM.TYPEORM_HOST,
-        port: dotenv.TYPEORM.TYPEORM_PORT as number,
-        database: dotenv.TYPEORM.TYPEORM_DBNAME,
-        username: dotenv.TYPEORM.TYPEORM_USERNAME,
-        password: dotenv.TYPEORM.TYPEORM_PASSWORD,
+        type: 'mongodb',
+        url: dotenv.TYPEORM.MONGO_URI,
+        useUnifiedTopology: true,
         synchronize: true,
         entities: [ __dirname + '/models/*.ts' ]
     })
