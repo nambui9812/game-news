@@ -6,6 +6,7 @@ import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 
 import dotenv from './configs/dotenv';
+import UsersRouter from './routes/users/UsersRouter';
 
 const initServer = () => {
     // Declare app
@@ -14,6 +15,8 @@ const initServer = () => {
     // Use middlewares
     app.use(cors());
     app.use(morgan('dev'));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
     // Connect DB
     createConnection({
@@ -30,6 +33,8 @@ const initServer = () => {
     app.get('/', (req, res) => {
         res.json('Server connected');
     });
+
+    app.use(UsersRouter);
 
     // PORT
     const PORT = dotenv.PORT;

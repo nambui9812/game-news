@@ -1,23 +1,23 @@
-import { Column, CreateDateColumn, Entity, ObjectID, ObjectIdColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export default class User {
-    @ObjectIdColumn()
-    id: ObjectID;
+    @ObjectIdColumn({ name: '_id' })
+    id: string;
 
-    @Column()
+    @Column({ nullable: false, unique: true })
     email: string;
 
-    @Column()
+    @Column({ nullable: false, unique: true })
     username: string;
 
-    @Column()
+    @Column({ nullable: false })
     password: string;
 
-    @Column()
+    @Column({ nullable: false })
     role: number;
 
-    @Column()
+    @Column({ nullable: true })
     lastLogin: Date;
 
     @CreateDateColumn()
