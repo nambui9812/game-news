@@ -3,14 +3,19 @@ import { getMongoRepository } from 'typeorm';
 import User from '../models/User';
 
 const UserRepository = () => {
-    const getAllUsers = async () => {
+    const getAllUsers = () => {
         const userRepository = getMongoRepository(User);
         return userRepository.find();
     };
 
-    const getUserById = async (id: string) => {
+    const getUserById = (id: string) => {
         const userRepository = getMongoRepository(User);
         return userRepository.findOne(id);
+    }
+
+    const getUserByUsername = (username: string) => {
+        const userRepository = getMongoRepository(User);
+        return userRepository.findOne({ username });
     }
     
     const createUser = (newUser: User) => {
@@ -23,7 +28,7 @@ const UserRepository = () => {
         return userRepository.save(updatedUser);
     }
     
-    const deleteUser = async (user: User) => {
+    const deleteUser = (user: User) => {
         const userRepository = getMongoRepository(User);
         return userRepository.remove(user);
     };
@@ -31,6 +36,7 @@ const UserRepository = () => {
     return Object.freeze({
         getAllUsers,
         getUserById,
+        getUserByUsername,
         updateUser,
         createUser,
         deleteUser

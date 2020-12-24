@@ -10,7 +10,13 @@ interface ChangePasswordInterface {
     newPassword: string
 }
 
+interface AuthenticateInterface {
+    username: string,
+    password: string
+}
+
 export {
     CreateUserInterface,
-    ChangePasswordInterface
+    ChangePasswordInterface,
+    AuthenticateInterface
 };
