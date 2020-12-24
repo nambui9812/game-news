@@ -65,12 +65,18 @@ const UserService = () => {
         }      
     };
 
-    const deleteUserById = async (id: string) => {
+    const deleteUserById = async (userId: string, id: string, role: number) => {
         // Get
-        const foundUser = await userRepository.getUserById(id);
+        const foundUser = await userRepository.getUserById(userId);
 
         // Check if exist
         if (!foundUser) throw new Error('User not found');
+
+        // Admin cannot delete Manager !!!
+        if (role === ROLES.ADMIN && foundUser.role === ROLES.MANAGER) throw new Error('Unauthorized');
+
+        // Admin cannot delete another Admin !!!
+        if (role === ROLES.ADMIN && id !== userId) throw new Error('Unauthorized');
 
         // Delete
         await userRepository.deleteUser(foundUser);

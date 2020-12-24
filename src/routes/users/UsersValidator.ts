@@ -13,8 +13,8 @@ const getAllUsersValidator = (req: express.Request, res: express.Response, next:
             !role || Number.isNaN(role)
         ) throw new Error('Invalid token');
 
-        // Only admin can do this
-        if (role !== ROLES.ADMIN) throw new Error('Unauthorized');
+        // Only manager or admin can do this
+        if (role !== ROLES.MANAGER || role !== ROLES.ADMIN) throw new Error('Unauthorized');
 
         next();
     }
@@ -27,7 +27,7 @@ const getAllUsersValidator = (req: express.Request, res: express.Response, next:
 
 const getUserByIdValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
-    const userId: string = req.params.id;
+    const userId: string = req.params.userId;
 
     try {
         // Check for valid token fields
@@ -37,8 +37,8 @@ const getUserByIdValidator = (req: express.Request, res: express.Response, next:
             !role || Number.isNaN(role)
         ) throw new Error('Invalid token');
 
-        // Admin can do this
-        if (role === ROLES.ADMIN) {
+        // Manager and Admin can do this
+        if (role === ROLES.MANAGER || role === ROLES.ADMIN) {
             next();
             return;
         }
@@ -78,7 +78,7 @@ const createUserValidator = (req: express.Request, res: express.Response, next: 
 
 const deleteUserValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
-    const userId: string = req.params.id;
+    const userId: string = req.params.userId;
 
     try {
         // Check for valid token fields
@@ -88,8 +88,8 @@ const deleteUserValidator = (req: express.Request, res: express.Response, next: 
             !role || Number.isNaN(role)
         ) throw new Error('Invalid token');
 
-        // Admin can do this
-        if (role === ROLES.ADMIN) {
+        // Manager and Admin can do this
+        if (role === ROLES.MANAGER || role === ROLES.ADMIN) {
             next();
             return;
         }

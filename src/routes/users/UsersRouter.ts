@@ -27,13 +27,13 @@ const router = express.Router();
 router.get(baseURL + '/', AuthenticateMiddleware, getAllUsersValidator, getAllUsersController);
 
 // Get user by id
-router.get(baseURL + '/user/:id', AuthenticateMiddleware, getUserByIdValidator, getUserByIdController);
+router.get(baseURL + '/user/:userId', AuthenticateMiddleware, getUserByIdValidator, getUserByIdController);
 
 // Create new user
 router.post(baseURL + '/register', createUserValidator, createNewUserController);
 
 // Delete user
-router.delete(baseURL + '/delete/:id', AuthenticateMiddleware, deleteUserValidator, deleteUserController);
+router.delete(baseURL + '/delete/:userId', AuthenticateMiddleware, deleteUserValidator, deleteUserController);
 
 // Change password
 router.put(baseURL + '/change-password', AuthenticateMiddleware, changePasswordValidator, changePasswordController);

@@ -22,9 +22,9 @@ const getAllUsersController = async (req: express.Request, res: express.Response
 
 const getUserByIdController = async (req: express.Request, res: express.Response) => {
     try {
-        const id: string = req.params.id;
+        const userId: string = req.params.userId;
 
-        const user = await userService.getUserById(id);
+        const user = await userService.getUserById(userId);
 
         res.status(202).json({
             message: 'Get user successfully.',
@@ -58,9 +58,10 @@ const createNewUserController = async (req: express.Request, res: express.Respon
 
 const deleteUserController = async (req: express.Request, res: express.Response) => {
     try {
-        const id: string = req.params.id;
+        const { id, role } = res.locals.jwtData as { id: string, role: number };
+        const userId: string = req.params.userId;
 
-        await userService.deleteUserById(id);
+        await userService.deleteUserById(userId, id, role);
 
         res.status(202).json({
             message: 'Delete user successfully.'
