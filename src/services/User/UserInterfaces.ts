@@ -15,8 +15,15 @@ interface AuthenticateInterface {
     password: string
 }
 
+interface ChangeRoleInterface {
+    role: number,
+    userId: string,
+    newUserRole: number
+}
+
 export {
     CreateUserInterface,
     ChangePasswordInterface,
-    AuthenticateInterface
+    AuthenticateInterface,
+    ChangeRoleInterface
 };

@@ -3,7 +3,12 @@ import jwt from 'jsonwebtoken';
 
 import UserRepository from '../../repositories/UserRepository';
 import { ROLES } from '../../configs/contants';
-import { CreateUserInterface, ChangePasswordInterface, AuthenticateInterface } from './UserInterfaces';
+import {
+    CreateUserInterface,
+    ChangePasswordInterface,
+    AuthenticateInterface,
+    ChangeRoleInterface
+} from './UserInterfaces';
 import User from '../../models/User';
 import dotenv from '../../configs/dotenv';
 
@@ -144,13 +149,44 @@ const UserService = () => {
         };
     };
 
+    const changeRole = async ({ role, userId, newUserRole }: ChangeRoleInterface) => {
+        try {
+            // Get
+            const foundUser = await userRepository.getUserById(userId);
+
+            // Check if exist
+            if (!foundUser) throw new Error('User not found.');
+
+            // Admin can not change role of Manager
+            if (role === ROLES.ADMIN && foundUser.role === ROLES.MANAGER) throw new Error('Unauthorized');
+
+            // Admin can not change role of other Admin
+            if (role === ROLES.ADMIN && foundUser.role === ROLES.ADMIN) throw new Error('Unauthorized');
+
+            // Change password
+            foundUser.role = newUserRole;
+    
+            // Updated
+            const updatedUser = await userRepository.updateUser(foundUser);
+
+            // Remove password
+            updatedUser.password = undefined;
+
+            return updatedUser;
+        }
+        catch(err) {
+            throw new Error(err);
+        }
+    };
+
     return Object.freeze({
         getAllUsers,
         getUserById,
         createUser,
         deleteUserById,
         changePassword,
-        authenticate
+        authenticate,
+        changeRole
     });
 };
 

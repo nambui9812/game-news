@@ -79,11 +79,11 @@ const changePasswordController = async (req: express.Request, res: express.Respo
         const { id } = res.locals.jwtData as { id: string };
         const { oldPassword, newPassword } = req.body as { oldPassword: string, newPassword: string };
 
-        const newUser = await userService.changePassword({ id, oldPassword, newPassword });
+        const updatedUser = await userService.changePassword({ id, oldPassword, newPassword });
 
         res.status(201).json({
-            message: 'Update user successfully.',
-            data: newUser
+            message: 'Change password successfully.',
+            data: updatedUser
         });
     }
     catch(err) {
@@ -93,7 +93,7 @@ const changePasswordController = async (req: express.Request, res: express.Respo
     }
 };
 
-const login = async (req: express.Request, res: express.Response) => {
+const loginController = async (req: express.Request, res: express.Response) => {
     try {
         const { username, password } = req.body as { username: string, password: string };
 
@@ -111,11 +111,31 @@ const login = async (req: express.Request, res: express.Response) => {
     }
 };
 
+const changeRoleController = async (req: express.Request, res: express.Response) => {
+    try {
+        const { role } = res.locals.jwtData as { role: number };
+        const { userId, newUserRole } = req.body as { userId: string, newUserRole: number };
+
+        const updatedUser = await userService.changeRole({ role, userId, newUserRole });
+
+        res.status(201).json({
+            message: 'Change role successfully.',
+            data: updatedUser
+        });
+    }
+    catch(err) {
+        res.status(404).json({
+            message: `Error: ${err.message}`
+        });
+    }
+};
+
 export {
     getAllUsersController,
     getUserByIdController,
     createNewUserController,
     deleteUserController,
     changePasswordController,
-    login
+    loginController,
+    changeRoleController
 };

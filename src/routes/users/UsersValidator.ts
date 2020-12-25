@@ -109,7 +109,7 @@ const deleteUserValidator = (req: express.Request, res: express.Response, next: 
 
 const changePasswordValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
-    const { oldPassword, newPassword, confirmNewPassword } = req.body as { oldPassword: string, newPassword: string, confirmNewPassword };
+    const { oldPassword, newPassword, confirmNewPassword } = req.body as { oldPassword: string, newPassword: string, confirmNewPassword: string };
 
     try {
         // Check for valid token fields
@@ -155,11 +155,41 @@ const loginValidator = (req: express.Request, res: express.Response, next: expre
     }
 };
 
+const changeRoleValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
+    const { userId, newUserRole } = req.body as { userId: string, newUserRole: number };
+
+    try {
+        // Check for valid token fields
+        if (
+            !id || id === '' ||
+            !username || username === '' ||
+            !role || Number.isNaN(role)
+        ) throw new Error('Invalid token');
+
+        // Check for valid fields
+        if (!userId || userId === '') throw new Error('User id is mandatory');
+
+        if (!newUserRole || Number.isNaN(newUserRole)) throw new Error('New user role is mandatory');
+
+        // Only Manager and Admin can change role
+        if (role !== ROLES.MANAGER || role !== ROLES.ADMIN) throw new Error('Unauthorized');
+
+        next();
+    }
+    catch(err) {
+        res.status(404).json({
+            message: 'Error: ' + err.message
+        });
+    }
+};
+
 export {
     getAllUsersValidator,
     getUserByIdValidator,
     createUserValidator,
     deleteUserValidator,
     changePasswordValidator,
-    loginValidator
+    loginValidator,
+    changeRoleValidator
 };

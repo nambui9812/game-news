@@ -8,7 +8,8 @@ import {
     createUserValidator,
     deleteUserValidator,
     changePasswordValidator,
-    loginValidator
+    loginValidator,
+    changeRoleValidator
 } from './UsersValidator';
 
 import {
@@ -17,8 +18,14 @@ import {
     createNewUserController,
     deleteUserController,
     changePasswordController,
-    login
+    loginController,
+    changeRoleController
 } from './UsersController';
+
+// TODO: Delete after creating one manager
+import UserRepository from '../../repositories/UserRepository';
+import User from '../../models/User';
+import bcrypt from 'bcrypt';
 
 const baseURL = '/api/v1/users'
 const router = express.Router();
@@ -39,6 +46,41 @@ router.delete(baseURL + '/delete/:userId', AuthenticateMiddleware, deleteUserVal
 router.put(baseURL + '/change-password', AuthenticateMiddleware, changePasswordValidator, changePasswordController);
 
 // Authentication
-router.post(baseURL + '/login', loginValidator, login);
+router.post(baseURL + '/login', loginValidator, loginController);
+
+// Change role
+router.put(baseURL + '/change-role', AuthenticateMiddleware, changeRoleValidator, changeRoleController);
+
+// Create manager
+// TODO: Delete after creating one manager
+router.post(baseURL + '/manager/create', async (req, res) => {
+    const userRepository = UserRepository();
+    const { email, username, password } = req.body as { email: string, username: string, password: string }
+
+    try {
+        // Gen salt
+        const salt = await bcrypt.genSalt(10);
+
+        // Hash
+        const hashed = await bcrypt.hash(password, salt);
+
+        // Create manager
+        const manager = new User();
+        manager.email = email;
+        manager.username = username;
+        manager.password = hashed;
+        manager.role = 0;
+
+        const createdManager = await userRepository.createUser(manager);
+
+        res.status(201).json({
+            message: 'Create manager successfully',
+            data: createdManager
+        })
+    }
+    catch(err) {
+        res.status(404).json({ message: 'Error when creating manager' });
+    }
+})
 
 export default router;
