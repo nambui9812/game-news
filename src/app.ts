@@ -7,6 +7,7 @@ import 'reflect-metadata';
 
 import dotenv from './configs/dotenv';
 import UsersRouter from './routes/users/UsersRouter';
+import GamesRouter from './routes/games/GamesRouter';
 
 const initServer = () => {
     // Declare app
@@ -35,6 +36,7 @@ const initServer = () => {
     });
 
     app.use(UsersRouter);
+    app.use(GamesRouter);
 
     // PORT
     const PORT = dotenv.PORT;
