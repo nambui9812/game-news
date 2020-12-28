@@ -15,7 +15,16 @@ const AuthenticateMiddleware = async (req: express.Request, res: express.Respons
         }
 
         // Verify
-        const decoded = jwt.verify(token, dotenv.JWT.SECRET_KEY);
+        const decoded = jwt.verify(token.substring(7), dotenv.JWT.SECRET_KEY);
+
+        const { id, username, role } = decoded as { id: string, username: string, role: number };
+
+        // Check for valid token fields
+        if (
+            !id || id === '' ||
+            !username || username === '' ||
+            Number.isNaN(role)
+        ) throw new Error('Invalid token');
 
         // Success
         res.locals.jwtData = decoded;

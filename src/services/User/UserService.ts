@@ -124,13 +124,13 @@ const UserService = () => {
     const authenticate = async ({ username, password }: AuthenticateInterface) => {
         // Get
         const foundUser = await userRepository.getUserByUsername(username);
-
+        
         // Check if exist
         if (!foundUser) throw new Error('Wrong username or password');
 
         // Authenticate
         const match = await bcrypt.compare(password, foundUser.password);
-
+        
         if (!match) throw new Error('Wrong username or password');
 
         // Remove password
@@ -138,11 +138,11 @@ const UserService = () => {
 
         // Create jwt
         const token = jwt.sign(
-            {id: foundUser.id, username: foundUser.username, role: foundUser.role },
+            { id: foundUser.id, username: foundUser.username, role: foundUser.role },
             dotenv.JWT.SECRET_KEY,
-            { algorithm: 'RS512', expiresIn: Math.floor(Date.now() / 1000 + 60 * 60) } // 1 hour
+            { algorithm: 'HS256', expiresIn: '1h' } // 1 hour
         );
-
+        
         return {
             foundUser,
             token

@@ -3,19 +3,12 @@ import express from 'express';
 import { ROLES } from '../../configs/contants';
 
 const getAllUsersValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
+    const { role } = res.locals.jwtData as { id: string, username: string, role: number };
 
     try {
-        // Check for valid token fields
-        if (
-            !id || id === '' ||
-            !username || username === '' ||
-            !role || Number.isNaN(role)
-        ) throw new Error('Invalid token');
-
         // Only manager or admin can do this
-        if (role !== ROLES.MANAGER || role !== ROLES.ADMIN) throw new Error('Unauthorized');
-
+        if (role !== ROLES.MANAGER && role !== ROLES.ADMIN) throw new Error('Unauthorized');
+        
         next();
     }
     catch(err) {
@@ -26,17 +19,10 @@ const getAllUsersValidator = (req: express.Request, res: express.Response, next:
 };
 
 const getUserByIdValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
+    const { id, role } = res.locals.jwtData as { id: string, username: string, role: number };
     const userId: string = req.params.userId;
 
     try {
-        // Check for valid token fields
-        if (
-            !id || id === '' ||
-            !username || username === '' ||
-            !role || Number.isNaN(role)
-        ) throw new Error('Invalid token');
-
         // Manager and Admin can do this
         if (role === ROLES.MANAGER || role === ROLES.ADMIN) {
             next();
@@ -77,17 +63,10 @@ const createUserValidator = (req: express.Request, res: express.Response, next: 
 };
 
 const deleteUserValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
+    const { id, role } = res.locals.jwtData as { id: string, username: string, role: number };
     const userId: string = req.params.userId;
 
     try {
-        // Check for valid token fields
-        if (
-            !id || id === '' ||
-            !username || username === '' ||
-            !role || Number.isNaN(role)
-        ) throw new Error('Invalid token');
-
         // Manager and Admin can do this
         if (role === ROLES.MANAGER || role === ROLES.ADMIN) {
             next();
@@ -108,17 +87,9 @@ const deleteUserValidator = (req: express.Request, res: express.Response, next: 
 };
 
 const changePasswordValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
     const { oldPassword, newPassword, confirmNewPassword } = req.body as { oldPassword: string, newPassword: string, confirmNewPassword: string };
 
     try {
-        // Check for valid token fields
-        if (
-            !id || id === '' ||
-            !username || username === '' ||
-            !role || Number.isNaN(role)
-        ) throw new Error('Invalid token');
-
         // Check for valid fields
         if (!oldPassword || oldPassword === '') throw new Error('Old password is mandatory');
 
@@ -156,24 +127,17 @@ const loginValidator = (req: express.Request, res: express.Response, next: expre
 };
 
 const changeRoleValidator = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const { id, username, role } = res.locals.jwtData as { id: string, username: string, role: number };
+    const { role } = res.locals.jwtData as { id: string, username: string, role: number };
     const { userId, newUserRole } = req.body as { userId: string, newUserRole: number };
 
     try {
-        // Check for valid token fields
-        if (
-            !id || id === '' ||
-            !username || username === '' ||
-            !role || Number.isNaN(role)
-        ) throw new Error('Invalid token');
-
         // Check for valid fields
         if (!userId || userId === '') throw new Error('User id is mandatory');
 
         if (!newUserRole || Number.isNaN(newUserRole)) throw new Error('New user role is mandatory');
 
         // Only Manager and Admin can change role
-        if (role !== ROLES.MANAGER || role !== ROLES.ADMIN) throw new Error('Unauthorized');
+        if (role !== ROLES.MANAGER && role !== ROLES.ADMIN) throw new Error('Unauthorized');
 
         next();
     }

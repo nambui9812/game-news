@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from "typeorm";
 
-@Entity()
+@Entity({ database: 'main', name: 'users' })
 export default class User {
     @ObjectIdColumn({ name: '_id' })
     id: string;

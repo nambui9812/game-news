@@ -24,7 +24,7 @@ router.get(baseURL + '/', getAllGamesController);
 router.get(baseURL + '/game/:gameId', getGameByIdController);
 
 // Create new game
-router.post(baseURL + '/create-game', AuthenticateMiddleware, createGameValidator, createNewGameController);
+router.post(baseURL + '/', AuthenticateMiddleware, createGameValidator, createNewGameController);
 
 // Delete game
 router.delete(baseURL + '/delete/:gameId', AuthenticateMiddleware, deleteGameValidator, deleteGameController);

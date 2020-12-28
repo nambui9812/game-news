@@ -2,8 +2,8 @@ import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } fr
 
 import Rating from './Rating';
 
-@Entity()
-export default class User {
+@Entity({ database: 'main', name: 'games' })
+export default class Game {
     @ObjectIdColumn({ name: '_id' })
     id: string;
 
