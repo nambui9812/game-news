@@ -9,5 +9,10 @@ export default {
     },
     JWT: {
         SECRET_KEY: process.env.JWT_SECRET_KEY
+    },
+    AWS: {
+        ID: process.env.AWS_ACCESS_ID,
+        SECRET: process.env.AWS_ACCESS_SECRET,
+        BUCKET_NAME: process.env.AWS_BUCKET_NAME
     }
 };

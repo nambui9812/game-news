@@ -6,6 +6,10 @@
         "outDir": "./dist",
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "lib": [
+            "es5",
+            "ES2015.Promise"
+        ]
     }
   }
