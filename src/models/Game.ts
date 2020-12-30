@@ -23,6 +23,9 @@ export default class Game {
     @Column({ nullable: false })
     rating: Rating[];
 
+    @Column()
+    imageUrls: string[];
+
     @CreateDateColumn()
     createdDate: Date;
 

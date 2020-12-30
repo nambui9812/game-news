@@ -1,9 +1,18 @@
+import { v4 } from 'uuid';
+import AWS from 'aws-sdk';
+
 import GameRepository from '../../repositories/GameRepository';
 import { CreateGameInterface } from './GameInterfaces';
 import Game from '../../models/Game';
+import dotenv from '../../configs/dotenv';
 
 const GameService = () => {
     const gameRepository = GameRepository();
+
+    // AWS
+    const s3 = new AWS.S3({
+        credentials: new AWS.Credentials({ accessKeyId: dotenv.AWS.ID, secretAccessKey: dotenv.AWS.SECRET })
+    });
 
     const getAllGames = async () => {
         // Get all
@@ -22,8 +31,32 @@ const GameService = () => {
         return foundGame;
     };
 
-    const createGame = async ({ name, description, genres, tags }: CreateGameInterface) =>{
+    const createGame = async ({ name, description, genres, tags, files }: CreateGameInterface) =>{
         try {
+            let response;
+
+            if (files.length > 0) {
+                // Make params
+                const params = [];
+
+                for (let i = 0; i < files.length; ++i) {
+                    const file = files[i];
+                    const fileArray = file.originalname.split('.');
+                    const fileExtension = fileArray[fileArray.length - 1];
+                    const fileRandomName = v4();
+
+                    params.push({
+                        Bucket: dotenv.AWS.BUCKET_NAME,
+                        Key: `${fileRandomName}.${fileExtension}`,
+                        Body: files[i].buffer
+                    })
+                }
+
+                response = await Promise.all(
+                    params.map(param => s3.upload(param).promise())
+                )
+            }
+
             // Make game
             const newGame = new Game();
             newGame.name = name;
@@ -31,6 +64,7 @@ const GameService = () => {
             newGame.genres = genres;
             newGame.tags = tags;
             newGame.rating = [];
+            newGame.imageUrls = response ? response.map(r => r.Location) : [];
 
             // Save
             const savedGame = await gameRepository.createGame(newGame);

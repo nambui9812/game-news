@@ -42,8 +42,9 @@ const createNewGameController = async (req: express.Request, res: express.Respon
     try {
         const { name, description } = req.body as { name: string, description: string };
         const { genres, tags } = res.locals.data as { genres: string[], tags: string[] };
-
-        const newGame = await gameService.createGame({ name, description, genres, tags });
+        const files = req.files ? req.files : [];
+        
+        const newGame = await gameService.createGame({ name, description, genres, tags, files });
 
         res.status(201).json({
             message: 'Create new game successfully.',

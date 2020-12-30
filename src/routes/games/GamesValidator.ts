@@ -18,10 +18,8 @@ const createGameValidator = (req: express.Request, res: express.Response, next: 
         if (!description || description === '') throw new Error('Description is mandatory');
 
         res.locals.data = {
-            name,
-            description,
             genres: genres ? genres : [],
-            tags: tags ? tags : [],
+            tags: tags ? tags : []
         };
 
         next();
