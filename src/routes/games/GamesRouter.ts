@@ -5,14 +5,18 @@ import { multipleUpload } from '../../middlewares/UploadMiddleware';
 
 import {
     createGameValidator,
-    deleteGameValidator
+    deleteGameValidator,
+    addImagesValidator,
+    removeImagesValidator
 } from './GamesValidator';
 
 import {
     getAllGamesController,
     getGameByIdController,
     createNewGameController,
-    deleteGameController
+    deleteGameController,
+    addImagesController,
+    removeImagesController
 } from './GamesController';
 
 const baseURL = '/api/v1/games'
@@ -29,5 +33,11 @@ router.post(baseURL + '/', AuthenticateMiddleware, multipleUpload, createGameVal
 
 // Delete game
 router.delete(baseURL + '/delete/:gameId', AuthenticateMiddleware, deleteGameValidator, deleteGameController);
+
+// Add images
+router.post(baseURL + '/add-images/:gameId', AuthenticateMiddleware, multipleUpload, addImagesValidator, addImagesController);
+
+// Remove images
+router.put(baseURL + '/remove-images', AuthenticateMiddleware, removeImagesValidator, removeImagesController);
 
 export default router;

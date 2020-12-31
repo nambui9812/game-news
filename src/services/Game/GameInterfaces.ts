@@ -6,6 +6,18 @@ interface CreateGameInterface {
     files: any
 };
 
+interface AddImagesInterface {
+    gameId: string,
+    files: any
+}
+
+interface RemoveImagesInterface {
+    gameId: string,
+    imageUrls: string[]
+}
+
 export {
-    CreateGameInterface
+    CreateGameInterface,
+    AddImagesInterface,
+    RemoveImagesInterface
 };

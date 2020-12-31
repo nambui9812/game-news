@@ -75,9 +75,48 @@ const deleteGameController = async (req: express.Request, res: express.Response)
     }
 };
 
+const addImagesController = async (req: express.Request, res: express.Response) => {
+    try {
+        const gameId: string = req.params.gameId;
+        const files = req.files;
+
+        const updatedGame = await gameService.addImages({ gameId, files });
+
+        res.status(200).json({
+            message: 'Add images to game successfully.',
+            data: updatedGame
+        });
+    }
+    catch(err) {
+        res.status(404).json({
+            message: `Error: ${err.message}`
+        });
+    }
+};
+
+const removeImagesController = async (req: express.Request, res: express.Response) => {
+    try {
+        const { gameId, imageUrls } = req.body as { gameId: string, imageUrls: string[] };
+
+        const updatedGame = await gameService.RemoveImages({ gameId, imageUrls });
+
+        res.status(200).json({
+            message: 'Remove images from game successfully.',
+            data: updatedGame
+        });
+    }
+    catch(err) {
+        res.status(404).json({
+            message: `Error: ${err.message}`
+        });
+    }
+};
+
 export {
     getAllGamesController,
     getGameByIdController,
     createNewGameController,
-    deleteGameController
+    deleteGameController,
+    addImagesController,
+    removeImagesController
 };
