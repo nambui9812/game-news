@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { v4 } from 'uuid';
+import AWS from 'aws-sdk';
 
 import UserRepository from '../../repositories/UserRepository';
 import { ROLES } from '../../configs/contants';
@@ -7,13 +9,19 @@ import {
     CreateUserInterface,
     ChangePasswordInterface,
     AuthenticateInterface,
-    ChangeRoleInterface
+    ChangeRoleInterface,
+    ChangeAvatarInterface
 } from './UserInterfaces';
 import User from '../../models/User';
 import dotenv from '../../configs/dotenv';
 
 const UserService = () => {
     const userRepository = UserRepository();
+
+    // AWS
+    const s3 = new AWS.S3({
+        credentials: new AWS.Credentials({ accessKeyId: dotenv.AWS.ID, secretAccessKey: dotenv.AWS.SECRET })
+    });
 
     const getAllUsers = async () => {
         // Get all
@@ -163,8 +171,57 @@ const UserService = () => {
             // Admin can not change role of other Admin
             if (role === ROLES.ADMIN && foundUser.role === ROLES.ADMIN) throw new Error('Unauthorized');
 
-            // Change password
+            // Change role
             foundUser.role = newUserRole;
+    
+            // Updated
+            const updatedUser = await userRepository.updateUser(foundUser);
+
+            // Remove password
+            updatedUser.password = undefined;
+
+            return updatedUser;
+        }
+        catch(err) {
+            throw new Error(err);
+        }
+    };
+
+    const changeAvatar = async ({ id, file }: ChangeAvatarInterface) => {
+        try {
+            // Get
+            const foundUser = await userRepository.getUserById(id);
+
+            // Check if exist
+            if (!foundUser) throw new Error('User not found.');
+
+            // Remove old avatar if having
+            if (foundUser.avatarUrl) {
+                // Get the key of object in s3
+                const arr = foundUser.avatarUrl.split('/');
+                const key = arr[arr.length - 1];
+
+                // Remove
+                await s3.deleteObject({ Bucket: dotenv.AWS.BUCKET_NAME, Key: key }).promise();
+                foundUser.avatarUrl = null;
+            }
+
+            // If having file in request
+            if (file) {
+                // Upload new avatar to s3 and assign avatar url to user
+                const fileArray = file.originalname.split('.');
+                const fileExtension = fileArray[fileArray.length - 1];
+                const fileRandomName = v4();
+
+                const response = await s3.upload({
+                    Bucket: dotenv.AWS.BUCKET_NAME,
+                    Key: `${fileRandomName}.${fileExtension}`,
+                    Body: file.buffer
+                }).promise();
+
+                // Update avatar url
+                foundUser.avatarUrl = response.Location;
+            }
     
             // Updated
             const updatedUser = await userRepository.updateUser(foundUser);
@@ -186,7 +243,8 @@ const UserService = () => {
         deleteUserById,
         changePassword,
         authenticate,
-        changeRole
+        changeRole,
+        changeAvatar
     });
 };
 

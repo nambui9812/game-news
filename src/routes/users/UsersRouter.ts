@@ -1,6 +1,7 @@
 import express from 'express';
 
 import AuthenticateMiddleware from '../../middlewares/AuthenticateMiddleware';
+import { singleUpload } from '../../middlewares/UploadMiddleware';
 
 import {
     getAllUsersValidator,
@@ -19,7 +20,8 @@ import {
     deleteUserController,
     changePasswordController,
     loginController,
-    changeRoleController
+    changeRoleController,
+    changeAvatarController
 } from './UsersController';
 
 // TODO: Comment after creating one manager
@@ -50,6 +52,9 @@ router.post(baseURL + '/login', loginValidator, loginController);
 
 // Change role
 router.put(baseURL + '/change-role', AuthenticateMiddleware, changeRoleValidator, changeRoleController);
+
+// Change avatar
+router.put(baseURL + '/change-avatar', AuthenticateMiddleware, singleUpload, changeAvatarController);
 
 // Create manager
 // TODO: Comment after creating one manager

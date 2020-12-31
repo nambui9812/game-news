@@ -21,9 +21,15 @@ interface ChangeRoleInterface {
     newUserRole: number
 }
 
+interface ChangeAvatarInterface {
+    id: string,
+    file: any
+}
+
 export {
     CreateUserInterface,
     ChangePasswordInterface,
     AuthenticateInterface,
-    ChangeRoleInterface
+    ChangeRoleInterface,
+    ChangeAvatarInterface
 };

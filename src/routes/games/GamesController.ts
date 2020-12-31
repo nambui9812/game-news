@@ -26,7 +26,7 @@ const getGameByIdController = async (req: express.Request, res: express.Response
 
         const game = await gameService.getGameById(gameId);
 
-        res.status(202).json({
+        res.status(200).json({
             message: 'Get game successfully.',
             data: game
         });
@@ -64,7 +64,7 @@ const deleteGameController = async (req: express.Request, res: express.Response)
 
         await gameService.deleteGameById(gameId);
 
-        res.status(202).json({
+        res.status(200).json({
             message: 'Delete game successfully.'
         });
     }

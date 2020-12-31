@@ -18,6 +18,9 @@ export default class User {
     role: number;
 
     @Column({ nullable: true })
+    avatarUrl: string;
+
+    @Column({ nullable: true })
     lastLogin: Date;
 
     @CreateDateColumn()

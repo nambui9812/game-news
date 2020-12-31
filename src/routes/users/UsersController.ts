@@ -26,7 +26,7 @@ const getUserByIdController = async (req: express.Request, res: express.Response
 
         const user = await userService.getUserById(userId);
 
-        res.status(202).json({
+        res.status(200).json({
             message: 'Get user successfully.',
             data: user
         });
@@ -63,7 +63,7 @@ const deleteUserController = async (req: express.Request, res: express.Response)
 
         await userService.deleteUserById(userId, id, role);
 
-        res.status(202).json({
+        res.status(200).json({
             message: 'Delete user successfully.'
         });
     }
@@ -81,7 +81,7 @@ const changePasswordController = async (req: express.Request, res: express.Respo
 
         const updatedUser = await userService.changePassword({ id, oldPassword, newPassword });
 
-        res.status(201).json({
+        res.status(200).json({
             message: 'Change password successfully.',
             data: updatedUser
         });
@@ -99,7 +99,7 @@ const loginController = async (req: express.Request, res: express.Response) => {
 
         const data = await userService.authenticate({ username, password });
 
-        res.status(201).json({
+        res.status(200).json({
             message: 'Update user successfully.',
             data
         });
@@ -118,8 +118,27 @@ const changeRoleController = async (req: express.Request, res: express.Response)
 
         const updatedUser = await userService.changeRole({ role, userId, newUserRole });
 
-        res.status(201).json({
+        res.status(200).json({
             message: 'Change role successfully.',
+            data: updatedUser
+        });
+    }
+    catch(err) {
+        res.status(404).json({
+            message: `Error: ${err.message}`
+        });
+    }
+};
+
+const changeAvatarController = async (req: express.Request, res: express.Response) => {
+    try {
+        const { id } = res.locals.jwtData as { id: string };
+        const file = req.file;
+
+        const updatedUser = await userService.changeAvatar({ id, file });
+
+        res.status(200).json({
+            message: 'Change avatar successfully.',
             data: updatedUser
         });
     }
@@ -137,5 +156,6 @@ export {
     deleteUserController,
     changePasswordController,
     loginController,
-    changeRoleController
+    changeRoleController,
+    changeAvatarController
 };
