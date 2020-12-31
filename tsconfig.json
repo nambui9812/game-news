@@ -4,10 +4,10 @@
         "module": "commonjs",
         "rootDir": "./src",
         "outDir": "./dist",
-        "esModuleInterop": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "lib": [
+        "esModuleInterop": true,        // Enable import a from 'a';
+        "emitDecoratorMetadata": true,  // For typeorm
+        "experimentalDecorators": true, // For typeorm
+        "lib": [                        // For AWS
             "es5",
             "ES2015.Promise"
         ]
