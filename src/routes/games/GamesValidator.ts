@@ -1,4 +1,6 @@
 import express from 'express';
+import validator from 'validator';
+import sanitizeHtml from 'sanitize-html';
 
 import { ROLES } from '../../configs/contants';
 
@@ -15,11 +17,15 @@ const createGameValidator = (req: express.Request, res: express.Response, next: 
         // Check for valid fields
         if (!name || name === '') throw new Error('Name is mandatory');
 
+        if (!validator.isAlphanumeric(name, 'en-US')) throw new Error('Name can only contain letters and numbers');
+
         if (!description || description === '') throw new Error('Description is mandatory');
 
         res.locals.data = {
-            genres: genres ? genres : [],
-            tags: tags ? tags : []
+            name,
+            description: sanitizeHtml(description),                             // Clean
+            genres: genres ? genres.map(genre => sanitizeHtml(genre)) : [],     // Clean
+            tags: tags ? tags.map(tag => sanitizeHtml(tag)) : []                // Clean
         };
 
         next();
@@ -87,6 +93,15 @@ const removeImagesValidator = (req: express.Request, res: express.Response, next
         if (!gameId || gameId === '') throw new Error('Game id is mandatory');
 
         if (!imageUrls || imageUrls.length === 0) throw new Error('No image url to remove');
+
+        imageUrls.forEach(url => {
+            if (!validator.isURL(url)) throw new Error('Invalid url');
+        })
+
+        res.locals.data = {
+            gameId: sanitizeHtml(gameId),                           // Clean
+            imageUrls: imageUrls.map(url => sanitizeHtml(url))      // Clean
+        }
 
         next();
     }

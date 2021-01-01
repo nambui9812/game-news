@@ -52,6 +52,14 @@ const UserService = () => {
 
     const createUser = async ({ email, username, password }: CreateUserInterface) =>{
         try {
+            // Check if email || username has been used
+            const userByEmail = userRepository.getUserByEmail(email);
+            const userByUsername = userRepository.getUserByUsername(username);
+
+            const res = await Promise.all([userByEmail, userByUsername]);
+
+            if (res[0] || res[1]) throw new Error('Email or username has been used');
+
             // Gen salt
             const salt = await bcrypt.genSalt(10);
 

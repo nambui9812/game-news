@@ -40,8 +40,7 @@ const getGameByIdController = async (req: express.Request, res: express.Response
 
 const createNewGameController = async (req: express.Request, res: express.Response) => {
     try {
-        const { name, description } = req.body as { name: string, description: string };
-        const { genres, tags } = res.locals.data as { genres: string[], tags: string[] };
+        const { name, description, genres, tags } = res.locals.data as { name: string, description: string, genres: string[], tags: string[] };
         const files = req.files ? req.files : [];
         
         const newGame = await gameService.createGame({ name, description, genres, tags, files });
@@ -96,7 +95,7 @@ const addImagesController = async (req: express.Request, res: express.Response) 
 
 const removeImagesController = async (req: express.Request, res: express.Response) => {
     try {
-        const { gameId, imageUrls } = req.body as { gameId: string, imageUrls: string[] };
+        const { gameId, imageUrls } = res.locals.data as { gameId: string, imageUrls: string[] };
 
         const updatedGame = await gameService.RemoveImages({ gameId, imageUrls });
 

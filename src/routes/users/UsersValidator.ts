@@ -1,4 +1,6 @@
 import express from 'express';
+import validator from 'validator';
+import sanitizeHtml from 'sanitize-html';
 
 import { ROLES } from '../../configs/contants';
 
@@ -49,9 +51,22 @@ const createUserValidator = (req: express.Request, res: express.Response, next: 
         // Check for valid fields
         if (!email || email === '') throw new Error('Email is mandatory');
 
+        if (!validator.isEmail(email)) throw new Error('Invalid email');
+
         if (!username || username === '') throw new Error('Username is mandatory');
 
+        if (!validator.isAlphanumeric(username, 'en-US')) throw new Error('Username can only contain letters and numbers');
+
         if (!password || password === '') throw new Error('Password is mandatory');
+
+        if (!validator.isStrongPassword(password))
+            throw new Error('Password must contain at least 1 lower case, 1 upper case, 1 number, 1 symbol and 8 in length');
+
+        res.locals.data = {
+            email: sanitizeHtml(email),         // Clean
+            username: sanitizeHtml(username),   // Clean
+            password: sanitizeHtml(password)    // Clean
+        };
 
         next();
     }
@@ -99,6 +114,15 @@ const changePasswordValidator = (req: express.Request, res: express.Response, ne
 
         if (newPassword !== confirmNewPassword) throw new Error('New Password and confirm new password are not matched');
 
+        if (!validator.isStrongPassword(newPassword))
+            throw new Error('Password must contain at least 1 lower case, 1 upper case, 1 number, 1 symbol and 8 in length');
+
+        res.locals.data = {
+            oldPassword: sanitizeHtml(oldPassword),                 // Clean
+            newPassword: sanitizeHtml(newPassword),                 // Clean
+            confirmNewPassword: sanitizeHtml(confirmNewPassword)    // Clean
+        };
+
         next();
     }
     catch(err) {
@@ -116,6 +140,11 @@ const loginValidator = (req: express.Request, res: express.Response, next: expre
         if (!username || username === '') throw new Error('Username is mandatory');
 
         if (!password || password === '') throw new Error('Password is mandatory');
+
+        res.locals.data = {
+            username: sanitizeHtml(username),       // Clean
+            password: sanitizeHtml(password)        // Clean
+        };
 
         next();
     }
@@ -138,6 +167,11 @@ const changeRoleValidator = (req: express.Request, res: express.Response, next: 
 
         // Only Manager and Admin can change role
         if (role !== ROLES.MANAGER && role !== ROLES.ADMIN) throw new Error('Unauthorized');
+
+        res.locals.data = {
+            userId: sanitizeHtml(userId),   // Clean
+            newUserRole
+        };
 
         next();
     }

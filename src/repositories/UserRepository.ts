@@ -17,6 +17,11 @@ const UserRepository = () => {
         const userRepository = getMongoRepository(User);
         return userRepository.findOne({ username });
     }
+
+    const getUserByEmail = (email: string) => {
+        const userRepository = getMongoRepository(User);
+        return userRepository.findOne({ email });
+    }
     
     const createUser = (newUser: User) => {
         const userRepository = getMongoRepository(User);
@@ -37,6 +42,7 @@ const UserRepository = () => {
         getAllUsers,
         getUserById,
         getUserByUsername,
+        getUserByEmail,
         updateUser,
         createUser,
         deleteUser

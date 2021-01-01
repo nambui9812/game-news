@@ -40,7 +40,7 @@ const getUserByIdController = async (req: express.Request, res: express.Response
 
 const createNewUserController = async (req: express.Request, res: express.Response) => {
     try {
-        const { email, username, password } = req.body as { email: string, username: string, password: string };
+        const { email, username, password } = res.locals.data as { email: string, username: string, password: string };
 
         const newUser = await userService.createUser({ email, username, password });
 
@@ -77,7 +77,7 @@ const deleteUserController = async (req: express.Request, res: express.Response)
 const changePasswordController = async (req: express.Request, res: express.Response) => {
     try {
         const { id } = res.locals.jwtData as { id: string };
-        const { oldPassword, newPassword } = req.body as { oldPassword: string, newPassword: string };
+        const { oldPassword, newPassword } = res.locals.data as { oldPassword: string, newPassword: string };
 
         const updatedUser = await userService.changePassword({ id, oldPassword, newPassword });
 
@@ -95,7 +95,7 @@ const changePasswordController = async (req: express.Request, res: express.Respo
 
 const loginController = async (req: express.Request, res: express.Response) => {
     try {
-        const { username, password } = req.body as { username: string, password: string };
+        const { username, password } = res.locals.data as { username: string, password: string };
 
         const data = await userService.authenticate({ username, password });
 
@@ -114,7 +114,7 @@ const loginController = async (req: express.Request, res: express.Response) => {
 const changeRoleController = async (req: express.Request, res: express.Response) => {
     try {
         const { role } = res.locals.jwtData as { role: number };
-        const { userId, newUserRole } = req.body as { userId: string, newUserRole: number };
+        const { userId, newUserRole } = res.locals.data as { userId: string, newUserRole: number };
 
         const updatedUser = await userService.changeRole({ role, userId, newUserRole });
 
