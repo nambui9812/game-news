@@ -160,7 +160,7 @@ const UserService = () => {
         );
         
         return {
-            foundUser,
+            user: foundUser,
             token
         };
     };
